@@ -18,28 +18,24 @@ public class MongoGenericDaoImpl<T>  {
     private final ReactiveMongoTemplate mongoTemplate;
     private final Class<T> typeParameterClass;
 
-    public MongoGenericDaoImpl(ReactiveMongoTemplate mongoTemplate, Class<T> typeParameterClass) {
+    protected MongoGenericDaoImpl(ReactiveMongoTemplate mongoTemplate, Class<T> typeParameterClass) {
         this.mongoTemplate = mongoTemplate;
         this.typeParameterClass = typeParameterClass;
     }
-
 
     protected Mono<T> save(T t) {
         return mongoTemplate.save(t);
     }
 
-
-    public Flux<T> findByQuery(Query query) {
+    protected Flux<T> findByQuery(Query query) {
         return  mongoTemplate.find(query,typeParameterClass);
     }
 
-
-    public Mono<T> update(Query query, UpdateDefinition update) {
+    protected Mono<T> update(Query query, UpdateDefinition update) {
         return mongoTemplate.findAndModify(query,update,typeParameterClass);
     }
 
-
-    public Mono<Long> delete(Query query) {
+    protected Mono<Long> delete(Query query) {
         return mongoTemplate.remove(query,typeParameterClass).map(DeleteResult::getDeletedCount);
     }
 }
