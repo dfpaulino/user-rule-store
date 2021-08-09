@@ -9,7 +9,10 @@ import reactor.core.publisher.Mono;
  */
 public interface RuleStoreService {
     Mono<RuleDocument> saveRule(RuleDocument ruleDocument);
+
     Flux<RuleDocument> findRule(RuleDocument ruleDocument);
+
     Mono<RuleDocument> updateRule(RuleDocument ruleDocument);
-    Mono<Void> deleteRule(RuleDocument ruleDocument);
+
+    Mono<Long> deleteRule(RuleDocument ruleDocument);
 }

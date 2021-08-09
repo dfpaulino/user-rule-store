@@ -46,16 +46,17 @@ class UserRuleRepositoryIT {
     @BeforeEach
     void setup() throws Exception {
         mongodExecutable.start();
-           }
+    }
+
     @AfterEach
     void clean() {
         mongodExecutable.stop();
     }
 
     @Test
-    public void test1() throws Exception{
+    public void test1() throws Exception {
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -64,16 +65,16 @@ class UserRuleRepositoryIT {
                 .setExpireAt(exp.getTime());
 
         Mono<RuleDocument> ruleDocumentMono = template.save(ruleDocument);
-        System.out.println("Just saved"+ruleDocumentMono.block().toString());
+        System.out.println("Just saved" + ruleDocumentMono.block().toString());
         //ruleDocumentMono.subscribe(r -> System.out.println("Just saved"+r.toString()));
         System.out.println("Getting flux");
         Flux<RuleDocument> ruleDocumentFlux = template.findAll(RuleDocument.class);
         StepVerifier.create(ruleDocumentFlux)
-                .assertNext(r ->{
-                        assertEquals("1",r.getRuleId());
-                        assertEquals("A", ruleDocument.getRuleName());
-                        assertEquals("user",r.getUser());
-                        System.out.println(r);
+                .assertNext(r -> {
+                    assertEquals("1", r.getRuleId());
+                    assertEquals("A", ruleDocument.getRuleName());
+                    assertEquals("user", r.getUser());
+                    System.out.println(r);
                 })
                 .expectComplete()
                 .verify();

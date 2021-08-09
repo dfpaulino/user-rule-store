@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -40,13 +41,15 @@ class MongoUserRuleRepoTest {
 
     @BeforeEach
     public void cleanData() {
-        template.remove(new Query(Criteria.where("user").is("user")),RuleDocument.class).block();
+        template.remove(new Query(Criteria.where("user").is("user")), RuleDocument.class).block();
     }
+
     @BeforeAll
     public void setup() throws Exception {
         mongodExecutable.start();
         repo = new MongoUserRuleRepo(template);
     }
+
     @AfterAll
     void clean() {
         mongodExecutable.stop();
@@ -57,10 +60,10 @@ class MongoUserRuleRepoTest {
     }
 
     @Test
-    public void save() throws Exception{
+    public void save() throws Exception {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -70,20 +73,50 @@ class MongoUserRuleRepoTest {
 
         //when
         Mono<RuleDocument> ruleDocumentMono = repo.saveDocument(ruleDocument);
-        System.out.println("Just saved"+ruleDocumentMono.block().toString());
+        System.out.println("Just saved" + ruleDocumentMono.block().toString());
         System.out.println("Getting flux");
         //then
         Flux<RuleDocument> ruleDocumentFlux = template.findAll(RuleDocument.class);
         //then
-        thenAssertDocument(ruleDocumentFlux,ruleDocument);
+        thenAssertDocument(ruleDocumentFlux, ruleDocument);
 
+    }
+
+    @Test
+    //This only works with real mongo
+    @Disabled
+    void save_whenDuplicate_shouldReturnDuplicateKeyException() throws Exception {
+        //given
+        Calendar exp = Calendar.getInstance();
+        exp.add(Calendar.SECOND, 300);
+        RuleDocument ruleDocument = new RuleDocument()
+                .setRuleId("1")
+                .setUser("user")
+                .setCreatedAt(new Date())
+                .setRuleName("A")
+                .setExpireAt(exp.getTime());
+        RuleDocument ruleDocumentDuplicated = new RuleDocument()
+                .setRuleId("1")
+                .setUser("user")
+                .setCreatedAt(new Date())
+                .setRuleName("A")
+                .setExpireAt(exp.getTime());
+        System.out.println("Saving....");
+        Mono<RuleDocument> ruleDocumentMono = repo.saveDocument(ruleDocument);
+        ruleDocumentMono.block();
+        Mono<RuleDocument> ruleDocumentMono2 = repo.saveDocument(ruleDocumentDuplicated);
+
+        //Flux<RuleDocument> savedDocs = template.insertAll(Arrays.asList(ruleDocument, ruleDocument2)); //
+        // consume the flux
+        ruleDocumentMono2.as(StepVerifier::create) //
+                .expectError(DuplicateKeyException.class).verify();
     }
 
     @Test
     void findById() {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -96,16 +129,16 @@ class MongoUserRuleRepoTest {
 
         Flux<RuleDocument> ruleDocumentFlux = repo.findDocument(toFind);
         //then
-        thenAssertDocument(ruleDocumentFlux,ruleDocument);
+        thenAssertDocument(ruleDocumentFlux, ruleDocument);
 
 
     }
 
     @Test
-    void findByUserAndRuleName() throws Exception{
+    void findByUserAndRuleName() throws Exception {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -119,14 +152,14 @@ class MongoUserRuleRepoTest {
         //when
         Flux<RuleDocument> ruleDocumentFlux = repo.findDocument(toFind);
         //then
-        thenAssertDocument(ruleDocumentFlux,ruleDocument);
+        thenAssertDocument(ruleDocumentFlux, ruleDocument);
     }
 
     @Test
-    void findByUser() throws Exception{
+    void findByUser() throws Exception {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -141,13 +174,14 @@ class MongoUserRuleRepoTest {
                 .setExpireAt(exp.getTime());
         System.out.println("Saving....");
 
-        Flux<RuleDocument> savedDocs = template.insertAll(Arrays.asList(ruleDocument,ruleDocument2)); //
+        Flux<RuleDocument> savedDocs = template.insertAll(Arrays.asList(ruleDocument, ruleDocument2)); //
         // consume the flux
         savedDocs.as(StepVerifier::create) //
                 .expectNextCount(2) //
                 .verifyComplete();
         //savedDocs.blockLast();
 
+        //Thread.sleep(10000);
         //when
         Flux<RuleDocument> ruleDocumentFlux = repo.findDocument(new RuleDocument().setUser(ruleDocument.getUser()));
         System.out.println("Searching ....");
@@ -158,10 +192,10 @@ class MongoUserRuleRepoTest {
     }
 
     @Test
-    void findByUser_whenNotExist_shouldReturnEmptyFlux() throws Exception{
+    void findByUser_whenNotExist_shouldReturnEmptyFlux() throws Exception {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
 
 
         //when
@@ -177,7 +211,7 @@ class MongoUserRuleRepoTest {
     void update() {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -191,7 +225,7 @@ class MongoUserRuleRepoTest {
         System.out.println(savedDoc.toString());
 
         // modify exp date
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         ruleDocument.setExpireAt(exp.getTime());
         //when
         Mono<RuleDocument> updated = repo.updateDocument(ruleDocument);
@@ -202,7 +236,7 @@ class MongoUserRuleRepoTest {
                 .assertNext(r -> {
                     System.out.println(r.toString());
                     id[0] = r.getId();
-                    assertEquals(exp.getTime(),r.getExpireAt());
+                    assertEquals(exp.getTime(), r.getExpireAt());
                     //assertTrue(r.getExpireAt().after(savedDoc.getExpireAt()));
                 })
                 .expectComplete()
@@ -210,15 +244,15 @@ class MongoUserRuleRepoTest {
 
         //verify the document was updated
         Flux<RuleDocument> findDocuments = template.find(
-                new Query(Criteria.where("id").is(id[0])),RuleDocument.class);
-        thenAssertDocument(findDocuments,ruleDocument);
+                new Query(Criteria.where("id").is(id[0])), RuleDocument.class);
+        thenAssertDocument(findDocuments, ruleDocument);
     }
 
     @Test
     void update_whenDocumentNotFound_returnEmptyMono() {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -231,7 +265,7 @@ class MongoUserRuleRepoTest {
 
         //when
         Calendar newExpDate = Calendar.getInstance();
-        newExpDate.add(Calendar.HOUR,24);
+        newExpDate.add(Calendar.HOUR, 24);
         Mono<RuleDocument> updated = repo.updateDocument(new RuleDocument()
                 .setId("randomId")
                 .setExpireAt(newExpDate.getTime())
@@ -244,15 +278,15 @@ class MongoUserRuleRepoTest {
 
         //verify the stored document was NOT modified
         Flux<RuleDocument> findDocuments = template.find(
-                new Query(Criteria.where("id").is(savedDoc.getId())),RuleDocument.class);
-        thenAssertDocument(findDocuments,savedDoc);
+                new Query(Criteria.where("id").is(savedDoc.getId())), RuleDocument.class);
+        thenAssertDocument(findDocuments, savedDoc);
     }
 
     @Test
     void delete() {
         //given
         Calendar exp = Calendar.getInstance();
-        exp.add(Calendar.SECOND,300);
+        exp.add(Calendar.SECOND, 300);
         RuleDocument ruleDocument = new RuleDocument()
                 .setRuleId("1")
                 .setUser("user")
@@ -267,7 +301,7 @@ class MongoUserRuleRepoTest {
                 .setExpireAt(exp.getTime());
         System.out.println("Saving....");
 
-        Flux<RuleDocument> savedDocs = template.insertAll(Arrays.asList(ruleDocument,ruleDocument2)); //
+        Flux<RuleDocument> savedDocs = template.insertAll(Arrays.asList(ruleDocument, ruleDocument2)); //
         // consume the flux and ensure there are 2 documents
         savedDocs.as(StepVerifier::create) //
                 .expectNextCount(2) //
@@ -278,14 +312,14 @@ class MongoUserRuleRepoTest {
         Mono<Long> deletedItems = repo.deleteDocument(ruleDocument);
         //System.out.println("Deleteed " + deletedItems.block()+ "elements");
         StepVerifier.create(deletedItems)
-                .assertNext(i -> assertEquals(1L,i))
+                .assertNext(i -> assertEquals(1L, i))
                 .expectComplete()
                 .verify();
 
         //then
         // ensure only 1 document is in store
         Flux<RuleDocument> findDocuments = template.find(
-                new Query(Criteria.where("user").is("user")),RuleDocument.class);
+                new Query(Criteria.where("user").is("user")), RuleDocument.class);
         StepVerifier.create(findDocuments).expectNextCount(1L).verifyComplete();
     }
 
@@ -301,18 +335,18 @@ class MongoUserRuleRepoTest {
         Mono<Long> deletedItems = repo.deleteDocument(toDelete);
         //System.out.println("Deleteed " + deletedItems.block()+ "elements");
         StepVerifier.create(deletedItems)
-                .assertNext(i -> assertEquals(0L,i))
+                .assertNext(i -> assertEquals(0L, i))
                 .expectComplete()
                 .verify();
     }
 
-    private void thenAssertDocument(Flux<RuleDocument> flux,RuleDocument expectedRuleDocument) {
+    private void thenAssertDocument(Flux<RuleDocument> flux, RuleDocument expectedRuleDocument) {
         StepVerifier.create(flux)
-                .assertNext(r ->{
-                    assertEquals(expectedRuleDocument.getRuleId(),r.getRuleId());
+                .assertNext(r -> {
+                    assertEquals(expectedRuleDocument.getRuleId(), r.getRuleId());
                     assertEquals(expectedRuleDocument.getRuleName(), r.getRuleName());
-                    assertEquals(expectedRuleDocument.getUser(),r.getUser());
-                    assertEquals(expectedRuleDocument.getExpireAt(),r.getExpireAt());
+                    assertEquals(expectedRuleDocument.getUser(), r.getUser());
+                    assertEquals(expectedRuleDocument.getExpireAt(), r.getExpireAt());
                     System.out.println(r);
                 })
                 .expectComplete()

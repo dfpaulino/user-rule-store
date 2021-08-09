@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Future;
 import java.util.Date;
 
 /**
@@ -13,19 +14,15 @@ import java.util.Date;
 public class RuleDocument {
     @Id
     private String id;
-
     @Indexed
     private String ruleId;
-
     @Indexed
     private String user;
-
     @Indexed
     private String ruleName;
-
     private Date createdAt;
-
     @Indexed(expireAfterSeconds = 360)
+    @Future
     private Date expireAt;
 
     public String getId() {

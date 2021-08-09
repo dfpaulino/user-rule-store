@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 /**
  * Created by dp on 03/08/2021
  */
-public class MongoGenericDaoImpl<T>  {
+public class MongoGenericDaoImpl<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoGenericDaoImpl.class);
     private final ReactiveMongoTemplate mongoTemplate;
@@ -23,19 +23,19 @@ public class MongoGenericDaoImpl<T>  {
         this.typeParameterClass = typeParameterClass;
     }
 
-    protected Mono<T> save(T t) {
+    public Mono<T> save(T t) {
         return mongoTemplate.save(t);
     }
 
     protected Flux<T> findByQuery(Query query) {
-        return  mongoTemplate.find(query,typeParameterClass);
+        return mongoTemplate.find(query, typeParameterClass);
     }
 
     protected Mono<T> update(Query query, UpdateDefinition update) {
-        return mongoTemplate.findAndModify(query,update,typeParameterClass);
+        return mongoTemplate.findAndModify(query, update, typeParameterClass);
     }
 
     protected Mono<Long> delete(Query query) {
-        return mongoTemplate.remove(query,typeParameterClass).map(DeleteResult::getDeletedCount);
+        return mongoTemplate.remove(query, typeParameterClass).map(DeleteResult::getDeletedCount);
     }
 }

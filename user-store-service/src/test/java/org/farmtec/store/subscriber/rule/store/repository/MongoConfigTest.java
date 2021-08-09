@@ -32,10 +32,10 @@ public class MongoConfigTest {
 
     @Bean
     public IMongodConfig mongodConfig() throws Exception {
-      return new MongodConfigBuilder()
-              .version(Version.Main.PRODUCTION)
-              .net(new Net(IP, PORT, false))
-              .build();
+        return new MongodConfigBuilder()
+                .version(Version.Main.PRODUCTION)
+                .net(new Net(IP, PORT, false))
+                .build();
     }
 
     @Bean
@@ -43,8 +43,9 @@ public class MongoConfigTest {
         MongodStarter starter = MongodStarter.getDefaultInstance();
         return starter.prepare(config);
     }
+
     @Bean
-    public ReactiveMongoTemplate reactiveMongoTemplate(){
+    public ReactiveMongoTemplate reactiveMongoTemplate() {
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToConnectionPoolSettings(builder -> builder
                         .maxConnectionIdleTime(5, TimeUnit.SECONDS)
@@ -53,10 +54,10 @@ public class MongoConfigTest {
                 .applyConnectionString(new ConnectionString(String.format(CONNECTION_STRING, IP, PORT)))
                 .build();
 
-        ReactiveMongoTemplate template = new ReactiveMongoTemplate(MongoClients.create(settings),"test");
+        ReactiveMongoTemplate template = new ReactiveMongoTemplate(MongoClients.create(settings), "test");
         //throw some exception if any error on read/write
         template.setWriteResultChecking(WriteResultChecking.EXCEPTION);
-    return template;
+        return template;
     }
 
 }
