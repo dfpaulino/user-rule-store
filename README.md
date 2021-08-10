@@ -4,7 +4,7 @@
 
 The goal of this artifact is to cache the applied/eligible rules for a user. This will manage the lifecycle of the
 element (delete when it reaches the TTL)
-The storage will be a sql database (mysql/H2). We could go with mongoDb
+The storage will be a No sql database (mongoDb).
 
 Provides a reactive REST CRUD API :
 
