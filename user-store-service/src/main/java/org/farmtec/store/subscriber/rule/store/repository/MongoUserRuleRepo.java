@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 /**
  * Created by dp on 03/08/2021
  */
-@Repository
+//@Repository
 public class MongoUserRuleRepo extends MongoGenericDaoImpl<RuleDocument> implements UserRuleRepo {
 
     public MongoUserRuleRepo(ReactiveMongoTemplate mongoTemplate) {
@@ -41,6 +41,10 @@ public class MongoUserRuleRepo extends MongoGenericDaoImpl<RuleDocument> impleme
 
         result = super.findByQuery(validateAndBuildQuery(ruleDocument, true));
         return result;
+    }
+
+    public Flux<RuleDocument> findAll() {
+        return super.findAll();
     }
 
 

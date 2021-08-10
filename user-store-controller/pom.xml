@@ -19,6 +19,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.farmtec.store</groupId>
+            <artifactId>user-store-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>

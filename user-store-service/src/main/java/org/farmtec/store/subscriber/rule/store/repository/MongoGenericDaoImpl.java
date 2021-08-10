@@ -31,6 +31,10 @@ public class MongoGenericDaoImpl<T> {
         return mongoTemplate.find(query, typeParameterClass);
     }
 
+    protected Flux<T> findAll() {
+        return mongoTemplate.findAll(typeParameterClass);
+    }
+
     protected Mono<T> update(Query query, UpdateDefinition update) {
         return mongoTemplate.findAndModify(query, update, typeParameterClass);
     }

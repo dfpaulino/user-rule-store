@@ -11,7 +11,7 @@ public interface RuleStoreService {
     Mono<RuleDocument> saveRule(RuleDocument ruleDocument);
 
     Flux<RuleDocument> findRule(RuleDocument ruleDocument);
-
+    Flux<RuleDocument> findAll();
     Mono<RuleDocument> updateRule(RuleDocument ruleDocument);
 
     Mono<Long> deleteRule(RuleDocument ruleDocument);

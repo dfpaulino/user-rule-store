@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 
+import java.security.PublicKey;
 import java.util.logging.Level;
 
 /**
@@ -61,6 +62,9 @@ public class RuleStoreServiceImpl implements RuleStoreService {
                 }));
 
     }
+
+    @Override
+    public Flux<RuleDocument> findAll() {return repo.findAll();}
 
     @Override
     public Mono<RuleDocument> updateRule(RuleDocument ruleDocument) {

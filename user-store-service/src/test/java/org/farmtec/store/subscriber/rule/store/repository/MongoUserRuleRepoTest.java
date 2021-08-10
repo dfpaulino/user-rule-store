@@ -1,16 +1,21 @@
 package org.farmtec.store.subscriber.rule.store.repository;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
+import org.farmtec.store.subscriber.rule.store.config.MongoConfig;
+import org.farmtec.store.subscriber.rule.store.config.MongoConnectionProperties;
 import org.farmtec.store.subscriber.rule.store.model.RuleDocument;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,8 +33,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = MongoConfigTest.class)
+@ContextConfiguration(classes = {MongoConfigTest.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestPropertySource(locations = "classpath:application-test.properties")
+//@ConfigurationPropertiesScan("org.farmtec.store.subscriber.rule.store.config")
 class MongoUserRuleRepoTest {
     @Autowired
     private MongodExecutable mongodExecutable;

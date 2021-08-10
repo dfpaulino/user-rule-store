@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.farmtec.store.subscriber.rule.store.config.MongoConfig
