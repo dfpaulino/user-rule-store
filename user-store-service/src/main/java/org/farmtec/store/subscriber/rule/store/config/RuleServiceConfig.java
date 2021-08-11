@@ -18,6 +18,7 @@ public class RuleServiceConfig {
     public UserRuleRepo userRuleRepo(ReactiveMongoTemplate reactiveMongoTemplate) {
         return new MongoUserRuleRepo(reactiveMongoTemplate);
     }
+
     @Bean
     public RuleStoreService ruleStoreService(UserRuleRepo repo) {
         return new RuleStoreServiceImpl(repo);

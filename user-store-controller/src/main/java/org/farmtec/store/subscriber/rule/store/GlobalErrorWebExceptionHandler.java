@@ -47,29 +47,29 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
         Map<String, Object> errorPropertiesMap = getErrorAttributes(request,
                 //ErrorAttributeOptions.defaults());
-                ErrorAttributeOptions.of(EXCEPTION,MESSAGE));
+                ErrorAttributeOptions.of(EXCEPTION, MESSAGE));
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        if(getError(request) instanceof RuleServiceException) {
-            RuleServiceException ruleServiceException = (RuleServiceException)getError(request);
-            if(ruleServiceException.getErrorCode()!=null){
-                if(ruleServiceException.getErrorCode()== DOCUMENT_NOT_FOUND) {
+        if (getError(request) instanceof RuleServiceException) {
+            RuleServiceException ruleServiceException = (RuleServiceException) getError(request);
+            if (ruleServiceException.getErrorCode() != null) {
+                if (ruleServiceException.getErrorCode() == DOCUMENT_NOT_FOUND) {
                     status = HttpStatus.NOT_FOUND;
-                    errorPropertiesMap.put("message",ruleServiceException.getErrorMsg());
+                    errorPropertiesMap.put("message", ruleServiceException.getErrorMsg());
                 } else if (STORAGE_ERROR == ruleServiceException.getErrorCode()) {
                     status = HttpStatus.SERVICE_UNAVAILABLE;
-                    errorPropertiesMap.put("message","Storage Service Unavailable");
+                    errorPropertiesMap.put("message", "Storage Service Unavailable");
                 } else {
                     status = HttpStatus.INTERNAL_SERVER_ERROR;
-                    errorPropertiesMap.put("message","Generic Error");
+                    errorPropertiesMap.put("message", "Generic Error");
                 }
             }
         } else {
             getError(request).printStackTrace();
         }
 
-        errorPropertiesMap.put("status",status);
+        errorPropertiesMap.put("status", status);
         return ServerResponse.status(status)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));

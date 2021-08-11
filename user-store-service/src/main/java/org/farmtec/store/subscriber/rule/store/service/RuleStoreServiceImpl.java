@@ -64,7 +64,9 @@ public class RuleStoreServiceImpl implements RuleStoreService {
     }
 
     @Override
-    public Flux<RuleDocument> findAll() {return repo.findAll();}
+    public Flux<RuleDocument> findAll() {
+        return repo.findAll();
+    }
 
     @Override
     public Mono<RuleDocument> updateRule(RuleDocument ruleDocument) {

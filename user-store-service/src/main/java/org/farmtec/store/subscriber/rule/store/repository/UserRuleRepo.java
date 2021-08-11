@@ -11,6 +11,7 @@ public interface UserRuleRepo {
     Mono<RuleDocument> saveDocument(org.farmtec.store.subscriber.rule.store.model.RuleDocument ruleDocument);
 
     Flux<RuleDocument> findDocument(RuleDocument ruleDocument);
+
     Flux<RuleDocument> findAll();
 
     Mono<RuleDocument> updateDocument(RuleDocument ruleDocument);

@@ -16,10 +16,10 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> route(RuleStoreRequestHandler handler) {
-        return RouterFunctions.route(POST("/rule").and(contentType(MediaType.APPLICATION_JSON)),handler::save)
-                .andRoute(GET("/rules").and(contentType(MediaType.APPLICATION_JSON)),handler::find)
-                .andRoute(GET("/rules/all").and(accept(MediaType.APPLICATION_JSON)),handler::getAll)
-                .andRoute(PUT("/rule").and(contentType(MediaType.APPLICATION_JSON)),handler::update)
-                .andRoute(DELETE("/rule").and(contentType(MediaType.APPLICATION_JSON)),handler::delete);
+        return RouterFunctions.route(POST("/rule").and(contentType(MediaType.APPLICATION_JSON)), handler::save)
+                .andRoute(GET("/rules").and(contentType(MediaType.APPLICATION_JSON)), handler::find)
+                .andRoute(GET("/rules/all").and(accept(MediaType.APPLICATION_JSON)), handler::getAll)
+                .andRoute(PUT("/rule").and(contentType(MediaType.APPLICATION_JSON)), handler::update)
+                .andRoute(DELETE("/rule").and(contentType(MediaType.APPLICATION_JSON)), handler::delete);
     }
 }

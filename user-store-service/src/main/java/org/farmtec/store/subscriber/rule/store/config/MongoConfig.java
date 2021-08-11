@@ -23,6 +23,7 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
     public MongoConfig(MongoConnectionProperties mongoConnectionProperties) {
         this.mongoConnectionProperties = mongoConnectionProperties;
     }
+
     @Override
     protected String getDatabaseName() {
         return mongoConnectionProperties.getDatabase();
