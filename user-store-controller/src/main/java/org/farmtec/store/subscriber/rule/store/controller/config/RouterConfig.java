@@ -1,5 +1,9 @@
-package org.farmtec.store.subscriber.rule.store.controllers;
+package org.farmtec.store.subscriber.rule.store.controller.config;
 
+import org.farmtec.store.subscriber.rule.store.handler.RuleStoreRequestHandler;
+import org.farmtec.store.subscriber.rule.store.mappers.RuleDocumentMapper;
+import org.farmtec.store.subscriber.rule.store.mappers.RuleDocumentMapperImpl;
+import org.farmtec.store.subscriber.rule.store.service.RuleStoreService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -21,5 +25,16 @@ public class RouterConfig {
                 .andRoute(GET("/rules/all").and(accept(MediaType.APPLICATION_JSON)), handler::getAll)
                 .andRoute(PUT("/rule").and(contentType(MediaType.APPLICATION_JSON)), handler::update)
                 .andRoute(DELETE("/rule").and(contentType(MediaType.APPLICATION_JSON)), handler::delete);
+    }
+
+    @Bean
+    RuleStoreRequestHandler ruleStoreRequestHandler(RuleStoreService ruleStoreService,
+                                                    RuleDocumentMapper mapper) {
+        return new RuleStoreRequestHandler(ruleStoreService, mapper);
+    }
+
+    @Bean
+    RuleDocumentMapper ruleDocumentMapper() {
+        return new RuleDocumentMapperImpl();
     }
 }

@@ -3,6 +3,7 @@
 .idea
 
 
+
 # Compiled class file
 *.class
 
@@ -28,3 +29,5 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /user-store-controller/user-store-controller.iml
+/user-store-controller/target/
+/user-store-service/target/

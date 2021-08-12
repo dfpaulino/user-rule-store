@@ -23,6 +23,7 @@ import static org.farmtec.store.subscriber.rule.store.exceptions.ErrorCode.STORA
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.*;
 
 /**
+ * Exception Handling for all scenarios
  * Created by dp on 10/08/2021
  */
 @Component
@@ -71,7 +72,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
         errorPropertiesMap.put("status", status);
         return ServerResponse.status(status)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }
 }
