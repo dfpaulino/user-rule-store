@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RuleDocumentMapperTest {
 
-    private RuleDocumentMapper mapper = new RuleDocumentMapperImpl();
+    private final RuleDocumentMapper mapper = new RuleDocumentMapperImpl();
     private static RuleDocumentDto dto;
     private static RuleDocument document;
 

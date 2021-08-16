@@ -30,8 +30,8 @@ public class RuleStoreRequestHandler {
         Mono<RuleDocumentDto> requestBodyMono = request.bodyToMono(RuleDocumentDto.class);
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(requestBodyMono.map(mapper::toRuleDocument).flatMap(ruleStoreService::saveRule).map(mapper::toDto),
-                        RuleDocumentDto.class);
+                .body(requestBodyMono.map(mapper::toRuleDocument).flatMap(ruleStoreService::saveRule)
+                                .map(mapper::toDto), RuleDocumentDto.class);
     }
 
     public Mono<ServerResponse> find(ServerRequest request) {
