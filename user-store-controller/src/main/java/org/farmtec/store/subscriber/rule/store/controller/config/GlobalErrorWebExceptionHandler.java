@@ -1,6 +1,5 @@
-package org.farmtec.store.subscriber.rule.store;
+package org.farmtec.store.subscriber.rule.store.controller.config;
 
-import org.farmtec.store.subscriber.rule.store.exceptions.ErrorCode;
 import org.farmtec.store.subscriber.rule.store.exceptions.RuleServiceException;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;

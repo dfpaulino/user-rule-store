@@ -1,8 +1,8 @@
 package org.farmtec.store.subscriber.rule.store.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.farmtec.store.subscriber.rule.store.GlobalErrorAttributes;
-import org.farmtec.store.subscriber.rule.store.GlobalErrorWebExceptionHandler;
+import org.farmtec.store.subscriber.rule.store.controller.config.GlobalErrorAttributes;
+import org.farmtec.store.subscriber.rule.store.controller.config.GlobalErrorWebExceptionHandler;
 import org.farmtec.store.subscriber.rule.store.controller.config.RouterConfig;
 import org.farmtec.store.subscriber.rule.store.dto.RuleDocumentDto;
 import org.farmtec.store.subscriber.rule.store.exceptions.ErrorCode;
