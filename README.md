@@ -1,5 +1,5 @@
 # user-rule-store
-
+[![CircleCI](https://circleci.com/gh/dfpaulino/user-rule-store/tree/main.svg?style=shield)](https://circleci.com/gh/dfpaulino/user-rule-store/tree/main)
 ## What is it
 
 The goal of this artifact is to cache the applied/eligible rules for a user. This will manage the lifecycle of the
