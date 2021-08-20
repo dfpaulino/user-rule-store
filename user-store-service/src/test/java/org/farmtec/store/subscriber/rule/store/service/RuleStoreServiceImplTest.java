@@ -134,6 +134,55 @@ class RuleStoreServiceImplTest {
     }
 
     @Test
+    void findRule_filterExpriredDocuments() {
+        Calendar exp = Calendar.getInstance();
+        Calendar exp_past = Calendar.getInstance();
+        exp.add(Calendar.HOUR, 10);
+        exp_past.set(Calendar.YEAR,2020);
+
+        RuleDocument ruleDocument1 = new RuleDocument()
+                .setId("1234567890")
+                .setRuleName("A")
+                .setUser("Dan")
+                .setRuleId("1")
+                .setCreatedAt(new Date())
+                .setExpireAt(exp.getTime());
+        RuleDocument ruleDocument2 = new RuleDocument()
+                .setRuleId("1234567891")
+                .setRuleName("B")
+                .setUser("Dan")
+                .setRuleId("2")
+                .setCreatedAt(new Date())
+                .setExpireAt(exp.getTime());
+        RuleDocument ruleDocument3 = new RuleDocument()
+                .setRuleId("1234567892")
+                .setRuleName("c")
+                .setUser("Dan")
+                .setRuleId("3")
+                .setCreatedAt(new Date())
+                .setExpireAt(exp_past.getTime());
+
+        //given(repo.findDocument(any(RuleDocument.class))).willReturn(Flux.just(ruleDocument1,ruleDocument2));
+        Mockito.when(repo.findDocument(any(RuleDocument.class))).thenReturn(just(ruleDocument1, ruleDocument2,ruleDocument3));
+
+        Flux<RuleDocument> ruleDocumentFlux = ruleStoreService.findRule(new RuleDocument().setUser("Dan"));
+
+        StepVerifier.create(ruleDocumentFlux)
+                .assertNext((r) -> {
+                    System.out.println(r.toString());
+                    assertThat(r.getRuleName()).isEqualTo("A");
+                })
+                .assertNext((r) -> {
+                    System.out.println(r.toString());
+                    assertThat(r.getRuleName()).isEqualTo("B");
+                })
+                .expectComplete()
+                .verify();
+
+    }
+
+
+    @Test
     void findRule_whenNotFound_shouldReturnRuleServiceException() {
 
         given(repo.findDocument(any(RuleDocument.class))).willReturn(empty());

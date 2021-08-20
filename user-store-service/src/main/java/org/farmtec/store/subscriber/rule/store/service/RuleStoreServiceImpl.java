@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 
-import java.security.PublicKey;
+import java.util.Date;
 import java.util.logging.Level;
 
 /**
@@ -30,9 +30,8 @@ public class RuleStoreServiceImpl implements RuleStoreService {
      * Save {@link RuleDocument}
      *
      * @param ruleDocument to save
-     * @return
-     * @throws org.springframework.dao.DataAccessException
-     * @throws
+     * @return Mono<> of {@link RuleDocument}
+     * @throws RuleServiceException this wraps any underlying exception
      */
     @Override
     public Mono<RuleDocument> saveRule(RuleDocument ruleDocument) {
@@ -42,7 +41,7 @@ public class RuleStoreServiceImpl implements RuleStoreService {
                 //.onErrorResume(original -> {LOGGER.error("Cant store document");
                 //    return Mono.error(new RuleServiceException("Unable to save Document",original)});
                 .onErrorMap(original -> {
-                    LOGGER.error("Cant store document {}", original);
+                    LOGGER.error("Cant store document", original);
                     return new RuleServiceException("Unable to save Document", original);
                 });
     }
@@ -51,9 +50,10 @@ public class RuleStoreServiceImpl implements RuleStoreService {
     public Flux<RuleDocument> findRule(RuleDocument ruleDocument) {
 
         //Exception if not found
-        return repo.findDocument(ruleDocument)
+        Date now = new Date();
+        return repo.findDocument(ruleDocument).filter(r->r.getExpireAt().after(now))
                 .onErrorResume((e) -> {
-                    LOGGER.error("Exception {}", e);
+                    LOGGER.error("Exception", e);
                     return Flux.error(new RuleServiceException(e));
                 })
                 .switchIfEmpty(Flux.error(() -> {
@@ -65,7 +65,8 @@ public class RuleStoreServiceImpl implements RuleStoreService {
 
     @Override
     public Flux<RuleDocument> findAll() {
-        return repo.findAll();
+        Date now = new Date();
+        return repo.findAll().filter(r -> r.getExpireAt().after(now));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class RuleStoreServiceImpl implements RuleStoreService {
         //Exception if not found
         return repo.updateDocument(ruleDocument)
                 .onErrorResume((e) -> {
-                    LOGGER.error("Exception {}", e);
+                    LOGGER.error("Exception", e);
                     return Mono.error(new RuleServiceException(e));
                 })
                 .switchIfEmpty(Mono.error(new RuleServiceException("Document not Found", ErrorCode.DOCUMENT_NOT_FOUND)));
