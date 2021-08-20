@@ -56,10 +56,10 @@ public class RuleStoreRequestHandler {
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
-        Mono<RuleDocumentDto> requestBodyMono = request.bodyToMono(RuleDocumentDto.class);
+        RuleDocument searchRuleDocument = buildRuleDocumentFromQueryParameters(request.queryParams());
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(requestBodyMono.map(mapper::toRuleDocument).flatMap(ruleStoreService::deleteRule), Long.class);
+                .body(ruleStoreService.deleteRule(searchRuleDocument), Long.class);
     }
 
     //TODO change this to a proper DTO mapper

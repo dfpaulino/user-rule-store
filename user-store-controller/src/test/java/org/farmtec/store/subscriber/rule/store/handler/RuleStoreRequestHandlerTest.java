@@ -323,19 +323,14 @@ class RuleStoreRequestHandlerTest {
 
     @Test
     void delete() {
-        //Given
-        RuleDocumentDto dto = new RuleDocumentDto();
-        dto.setRuleId("1");
-        dto.setRuleName("rule_1");
-        dto.setUser("user");
-        dto.setExpireAt(new Date());
-
         when(ruleStoreService.deleteRule(any(RuleDocument.class))).thenReturn(Mono.just(1L));
         //when
         webTestClient.method(HttpMethod.DELETE)
-                .uri("/rule")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(dto), RuleDocumentDto.class)
+                .uri(uriBuilder -> uriBuilder
+                        .path("/rule")
+                        .queryParam("user", "user")
+                        .queryParam("ruleName", "rule_1")
+                        .build())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Long.class)
